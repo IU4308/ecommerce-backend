@@ -1,10 +1,18 @@
-FROM mysql:5.6
+FROM php:8.2-apache
 
-# Set environment variables
-ENV MYSQL_ROOT_PASSWORD=root
-ENV MYSQL_DATABASE=mydb
-ENV MYSQL_USER=admin
-ENV MYSQL_PASSWORD=pwd
+# Install MySQL and PHP extensions
+RUN apt-get update && \
+    apt-get install -y default-mysql-server default-mysql-client && \
+    docker-php-ext-install pdo pdo_mysql
 
-# Copy SQL script (generated from your data.json)
-COPY init.sql /docker-entrypoint-initdb.d/
+# Copy PHP file
+COPY index.php /var/www/html/
+
+# Copy init.sql
+COPY init.sql /init.sql
+
+# Start MySQL and Apache together
+CMD service mysql start && \
+    sleep 5 && \
+    mysql -u root -e "source /init.sql" && \
+    apache2-foreground
