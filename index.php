@@ -2,7 +2,7 @@
 $host = '127.0.0.1';
 $db = 'mydb';
 $user = 'root';
-$pass = 'root';
+$pass = '';
 $dsn = "mysql:host=$host;dbname=$db";
 
 try {

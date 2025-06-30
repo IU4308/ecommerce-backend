@@ -5,8 +5,10 @@ RUN apt-get update && \
     apt-get install -y default-mysql-server default-mysql-client && \
     docker-php-ext-install pdo pdo_mysql
 
-COPY index.php /var/www/html/
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf \
+ && sed -i 's/Listen 80/Listen 0.0.0.0:80/' /etc/apache2/ports.conf
 
+COPY index.php /var/www/html/
 COPY init.sql /init.sql
 
 # Start MySQL and Apache together
