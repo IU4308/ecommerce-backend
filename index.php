@@ -3,16 +3,15 @@ $host = '127.0.0.1';
 $db = 'mydb';
 $user = 'root';
 $pass = '';
-$dsn = "mysql:host=$host;dbname=$db";
+$dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
 
 try {
     $pdo = new PDO($dsn, $user, $pass);
-    echo "✅ Connected to MySQL<br>";
+    echo "<h1>✅ Connected to MySQL</h1>";
 
-    $stmt = $pdo->query("SELECT * FROM products");
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        echo "👤 " . $row['name'] . "<br>";
-    }
+    $stmt = $pdo->query("SELECT COUNT(*) FROM products");
+    $count = $stmt->fetchColumn();
+    echo "<p>Products count: $count</p>";
 } catch (PDOException $e) {
-    echo "❌ Connection failed: " . $e->getMessage();
+    echo "<h1>❌ Connection failed:</h1><pre>" . $e->getMessage() . "</pre>";
 }
