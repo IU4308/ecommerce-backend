@@ -11,7 +11,7 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
 
 # Copy PHP app and DB initialization script
 COPY index.php /var/www/html/
-COPY init_full.sql /init.sql
+COPY init.sql /init.sql
 
 # Start MariaDB, initialize the DB, and then start Apache
 CMD bash -c "mysqld_safe & \
