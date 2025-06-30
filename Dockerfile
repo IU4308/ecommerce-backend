@@ -16,5 +16,5 @@ COPY init.sql /init.sql
 # Start MariaDB, initialize the DB, and then start Apache
 CMD bash -c "mysqld_safe & \
     sleep 5 && \
-    mysql -u root -e 'CREATE DATABASE IF NOT EXISTS mydb; USE mydb; source /init.sql;' && \
+    mysql --protocol=tcp -h 127.0.0.1 -u root -e 'CREATE DATABASE IF NOT EXISTS mydb; USE mydb; source /init.sql;' && \
     apache2-foreground"
