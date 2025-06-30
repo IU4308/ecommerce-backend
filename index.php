@@ -1,9 +1,20 @@
 <?php
 $host = '127.0.0.1';
 $db = 'mydb';
-$user = 'root';
-$pass = '';
-$dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
+$user = 'appuser';
+$pass = 'apppassword';
+$dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4;connect_timeout=2";
+
+// Healthcheck endpoint: ?health
+if (isset($_GET['health'])) {
+    try {
+        $pdo = new PDO($dsn, $user, $pass);
+        exit("✅ OK");
+    } catch (PDOException $e) {
+        http_response_code(500);
+        exit("❌ DB connection error");
+    }
+}
 
 try {
     $pdo = new PDO($dsn, $user, $pass);
