@@ -11,17 +11,21 @@ RUN apt-get update && \
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Enable Apache headers module (for CORS)
+# Enable Apache modules
 RUN a2enmod headers
 
-# Copy the full app into the container
+# Set Apache document root to /var/www/html/public
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/000-default.conf
+
+# Copy everything
 COPY . /var/www/html/
 
 # Install PHP dependencies
 RUN cd /var/www/html && composer install --no-dev --optimize-autoloader
 
-# Ensure init.sh is executable
+# Make init.sh executable
 RUN chmod +x /var/www/html/init.sh
 
-# Start script
+# Start DB and Apache
 CMD ["/var/www/html/init.sh"]
