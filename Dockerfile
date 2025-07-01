@@ -11,17 +11,17 @@ RUN apt-get update && \
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Configure Apache to bind on all interfaces (for Render)
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
-    sed -i 's/Listen 80/Listen 0.0.0.0:80/' /etc/apache2/ports.conf
+# Enable Apache headers module (for CORS)
+RUN a2enmod headers
 
-# Copy app and startup files
-COPY composer.json composer.lock /var/www/html/
-RUN cd /var/www/html && composer install
-COPY src/ /var/www/html/src/
-COPY public/index.php /var/www/html/
-COPY init.sql /init.sql
-COPY init.sh /init.sh
-RUN chmod +x /init.sh
+# Copy the full app into the container
+COPY . /var/www/html/
 
-CMD ["/init.sh"]
+# Install PHP dependencies
+RUN cd /var/www/html && composer install --no-dev --optimize-autoloader
+
+# Ensure init.sh is executable
+RUN chmod +x /var/www/html/init.sh
+
+# Start script
+CMD ["/var/www/html/init.sh"]
