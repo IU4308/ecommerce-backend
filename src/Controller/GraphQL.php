@@ -1,0 +1,53 @@
+<?php
+
+namespace App\Controller;
+
+use App\GraphQL\Schema\QueryType;
+use GraphQL\GraphQL as GraphQLBase;
+use GraphQL\Type\Schema;
+use GraphQL\Type\SchemaConfig;
+use RuntimeException;
+use Throwable;
+use App\GraphQL\SchemaBuilder;
+
+class GraphQL
+{
+    public static function handle(): string
+    {
+        try {
+            $schema = SchemaBuilder::build($GLOBALS['db']);
+
+            $rawInput = file_get_contents('php://input');
+            if ($rawInput === false || empty($rawInput)) {
+                throw new RuntimeException('No GraphQL input provided.');
+            }
+
+            $input = json_decode($rawInput, true);
+            if (!isset($input['query'])) {
+                throw new RuntimeException('Missing "query" field in GraphQL request.');
+            }
+
+            $query = $input['query'];
+            $variables = $input['variables'] ?? null;
+
+            $result = GraphQLBase::executeQuery(
+                $schema,
+                $query,
+                null,
+                null,
+                $variables
+            );
+
+            $output = $result->toArray();
+        } catch (Throwable $e) {
+            $output = [
+                'error' => [
+                    'message' => $e->getMessage(),
+                ],
+            ];
+        }
+
+        header('Content-Type: application/json; charset=UTF-8');
+        return json_encode($output);
+    }
+}
