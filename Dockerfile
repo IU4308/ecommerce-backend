@@ -1,10 +1,15 @@
 FROM php:8.2-apache
 
-# Install MariaDB and PHP MySQL extensions
+# Install dependencies and PHP extensions
 RUN apt-get update && \
-    apt-get install -y mariadb-server mariadb-client && \
+    apt-get install -y \
+        mariadb-server mariadb-client \
+        unzip curl git && \
     docker-php-ext-install pdo pdo_mysql && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Configure Apache to bind on all interfaces (for Render)
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
