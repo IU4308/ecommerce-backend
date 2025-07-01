@@ -7,32 +7,27 @@ until mysqladmin ping --silent; do
   sleep 1
 done
 
-# Check if MariaDB is still alive
 pgrep mysqld || { echo "[ERROR] MariaDB is not running!"; exit 1; }
 
-
-# Change root user to use mysql_native_password (needed for TCP)
 echo "[INFO] Switching root auth plugin to mysql_native_password..."
 mysql -u root <<EOF
 ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD('');
 FLUSH PRIVILEGES;
 EOF
 
-# Create app user and DB if not already initialized
 mysql -u root <<EOF
 CREATE DATABASE IF NOT EXISTS mydb;
 CREATE USER IF NOT EXISTS 'appuser'@'localhost' IDENTIFIED BY 'apppassword';
 GRANT ALL PRIVILEGES ON mydb.* TO 'appuser'@'localhost';
 FLUSH PRIVILEGES;
 USE mydb;
-SOURCE /init.sql;
+SOURCE /var/www/html/init.sql;
 EOF
 
-# Initialize schema if products table not found
 mysql -u root mydb -e "SHOW TABLES LIKE 'products'\G" | grep -q "products"
 if [ $? -ne 0 ]; then
   echo "Initializing DB schema..."
-  mysql -u root mydb < /init.sql
+  mysql -u root mydb < /var/www/html/init.sql
 else
   echo "DB schema already exists. Skipping init.sql."
 fi
