@@ -8,8 +8,12 @@ class Config
 {
     public function __construct(string $baseDir)
     {
-        $dotenv = Dotenv::createImmutable($baseDir);
-        $dotenv->load();
+        $envPath = $baseDir . '/.env';
+
+        if (file_exists($envPath)) {
+            $dotenv = Dotenv::createImmutable($baseDir);
+            $dotenv->load();
+        }
     }
 
     public function get(string $key, mixed $default = null): mixed
