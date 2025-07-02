@@ -2,20 +2,17 @@
 
 namespace App\Controller;
 
-use App\GraphQL\Schema\QueryType;
 use GraphQL\GraphQL as GraphQLBase;
-use GraphQL\Type\Schema;
-use GraphQL\Type\SchemaConfig;
 use RuntimeException;
 use Throwable;
 use App\GraphQL\SchemaBuilder;
 
 class GraphQL
 {
-    public static function handle(): string
+    public function handle(\PDO $pdo): string
     {
         try {
-            $schema = SchemaBuilder::build($GLOBALS['db']);
+            $schema = SchemaBuilder::build($pdo);
 
             $rawInput = file_get_contents('php://input');
             if ($rawInput === false || empty($rawInput)) {

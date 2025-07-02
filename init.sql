@@ -1,17 +1,58 @@
 CREATE TABLE categories (name VARCHAR(255) PRIMARY KEY);
+
+CREATE TABLE categories (
+    name VARCHAR(255) PRIMARY KEY
+);
+
+CREATE TABLE products (
+    id VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(255),
+    in_stock BOOLEAN,
+    description TEXT,
+    category VARCHAR(255),
+    brand VARCHAR(255),
+    FOREIGN KEY (category) REFERENCES categories(name)
+);
+
+CREATE TABLE product_attributes (
+    product_id VARCHAR(255),
+    attribute_name VARCHAR(255),
+    attribute_type VARCHAR(255),
+    PRIMARY KEY (product_id, attribute_name),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+CREATE TABLE attribute_items (
+    product_id VARCHAR(255),
+    attribute_name VARCHAR(255),
+    item_id VARCHAR(255),
+    display_value TEXT,
+    value TEXT,
+    PRIMARY KEY (product_id, attribute_name, item_id),
+    FOREIGN KEY (product_id, attribute_name) REFERENCES product_attributes(product_id, attribute_name)
+);
+
+CREATE TABLE product_prices (
+    product_id VARCHAR(255),
+    currency_label VARCHAR(10),
+    currency_symbol VARCHAR(5),
+    amount DECIMAL(10,2),
+    PRIMARY KEY (product_id, currency_label),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+CREATE TABLE product_gallery (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id VARCHAR(255),
+    image_url TEXT,
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+
 INSERT INTO categories (name) VALUES ('all');
 INSERT INTO categories (name) VALUES ('clothes');
 INSERT INTO categories (name) VALUES ('tech');
 
-CREATE TABLE products (
-    id VARCHAR(255) PRIMARY KEY,
-    name TEXT,
-    in_stock BOOLEAN,
-    description TEXT,
-    category VARCHAR(255),
-    brand TEXT,
-    FOREIGN KEY (category) REFERENCES categories(name)
-);
 
 INSERT INTO products (id, name, in_stock, description, category, brand) VALUES ('huarache-x-stussy-le', 'Nike Air Huarache Le', 1, '<p>Great sneakers for everyday use!</p>', 'clothes', 'Nike x Stussy');
 INSERT INTO products (id, name, in_stock, description, category, brand) VALUES ('jacket-canada-goosee', 'Jacket', 1, '<p>Awesome winter jacket</p>', 'clothes', 'Canada Goose');
@@ -58,38 +99,6 @@ INSERT INTO products (id, name, in_stock, description, category, brand) VALUES (
 ', 'tech', 'Apple');
 
 
-CREATE TABLE product_gallery (
-    product_id VARCHAR(255),
-    image_url TEXT,
-    FOREIGN KEY (product_id) REFERENCES products(id)
-);
-
-
-CREATE TABLE product_attributes (
-    product_id VARCHAR(255),
-    attribute_name VARCHAR(255),
-    attribute_type VARCHAR(255),
-    FOREIGN KEY (product_id) REFERENCES products(id)
-);
-
-
-CREATE TABLE attribute_items (
-    product_id VARCHAR(255),
-    attribute_name VARCHAR(255),
-    item_id VARCHAR(255),
-    display_value TEXT,
-    value TEXT,
-    FOREIGN KEY (product_id) REFERENCES products(id)
-);
-
-
-CREATE TABLE product_prices (
-    product_id VARCHAR(255),
-    currency_label VARCHAR(10),
-    currency_symbol VARCHAR(5),
-    amount DECIMAL(10,2),
-    FOREIGN KEY (product_id) REFERENCES products(id)
-);
 
 INSERT INTO product_gallery (product_id, image_url) VALUES ('huarache-x-stussy-le', 'https://cdn.shopify.com/s/files/1/0087/6193/3920/products/DD1381200_DEOA_2_720x.jpg?v=1612816087');
 INSERT INTO product_gallery (product_id, image_url) VALUES ('huarache-x-stussy-le', 'https://cdn.shopify.com/s/files/1/0087/6193/3920/products/DD1381200_DEOA_1_720x.jpg?v=1612816087');

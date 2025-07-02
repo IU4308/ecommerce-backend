@@ -17,9 +17,10 @@ class ResolverContainer
         return new CategoryResolver(new CategoryRepository($this->pdo));
     }
 
-    // public function product(): ProductResolver {
-    //     return new ProductResolver(new ProductRepository($this->pdo));
-    // }
+    public function product(): ProductResolver
+    {
+        return new ProductResolver(new ProductRepository($this->pdo));
+    }
 
     // Add more as needed (attribute(), order(), etc.)
 }

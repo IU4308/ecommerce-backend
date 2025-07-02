@@ -15,6 +15,6 @@ class CategoryRepository
     public function getAll(): array
     {
         $stmt = $this->pdo->query("SELECT name FROM categories");
-        return array_map(fn($row) => new Category($row['name']), $stmt->fetchAll());
+        return array_map(fn($row) => new Category($row['name']), $stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 }
