@@ -2,12 +2,12 @@
 
 namespace App\Config;
 
-use PDO;
-use PDOException;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 
 class Database
 {
-    private PDO $connection;
+    private Connection $connection;
 
     public function __construct(
         private string $host,
@@ -17,15 +17,19 @@ class Database
     ) {
     }
 
-    public function connect(): PDO
+    public function connect(): Connection
     {
-        $dsn = "mysql:host={$this->host};dbname={$this->db};charset=utf8mb4;connect_timeout=2";
         try {
-            $this->connection = new PDO($dsn, $this->user, $this->pass);
-            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->connection = DriverManager::getConnection([
+                'dbname' => $_ENV['DB_NAME'],
+                'user' => $_ENV['DB_USER'],
+                'password' => $_ENV['DB_PASS'],
+                'host' => $_ENV['DB_HOST'],
+                'driver' => 'pdo_mysql',
+            ]);
             return $this->connection;
-        } catch (PDOException $e) {
-            throw new \RuntimeException('❌ DB Connection failed: ' . $e->getMessage());
+        } catch (\Doctrine\DBAL\Exception $e) {
+            throw new \RuntimeException('Database connection failed: ' . $e->getMessage(), 0, $e);
         }
     }
 }

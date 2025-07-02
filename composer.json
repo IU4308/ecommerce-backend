@@ -3,8 +3,9 @@
   "description": "Backend for test task",
   "type": "project",
   "require": {
-    "webonyx/graphql-php": "^15.0",
-    "vlucas/phpdotenv": "^5.5"
+    "doctrine/dbal": "^4.2",
+    "vlucas/phpdotenv": "^5.5",
+    "webonyx/graphql-php": "^15.0"
   },
   "autoload": {
     "psr-4": {

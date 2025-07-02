@@ -6,13 +6,14 @@ use GraphQL\GraphQL as GraphQLBase;
 use RuntimeException;
 use Throwable;
 use App\GraphQL\SchemaBuilder;
+use Doctrine\DBAL\Connection;
 
 class GraphQL
 {
-    public function handle(\PDO $pdo): string
+    public function handle(Connection $connection): string
     {
         try {
-            $schema = SchemaBuilder::build($pdo);
+            $schema = SchemaBuilder::build($connection);
 
             $rawInput = file_get_contents('php://input');
             if ($rawInput === false || empty($rawInput)) {

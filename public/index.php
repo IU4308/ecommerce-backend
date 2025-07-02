@@ -26,10 +26,10 @@ $db = new Database(
     $config->get('DB_PASS')
 );
 try {
-    // $GLOBALS['db'] = $db->connect();
-    $pdo = $db->connect();
+    // $pdo = $db->connect();
+    $connection = $db->connect();
 
-    echo (new GraphQL())->handle($pdo);
+    echo (new GraphQL())->handle($connection);
 } catch (Throwable $e) {
     echo "<h1>❌ Error:</h1><pre>{$e->getMessage()}</pre>";
 }
