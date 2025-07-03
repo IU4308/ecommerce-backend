@@ -5,6 +5,7 @@ namespace App\GraphQL\Schema;
 use App\GraphQL\Resolver\ResolverContainer;
 use App\GraphQL\Type\CategoryType;
 use App\GraphQL\Type\HomeProductType;
+use App\GraphQL\Type\ProductType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 
@@ -21,9 +22,15 @@ class QueryType extends ObjectType
                 ],
                 'products' => [
                     'type' => Type::listOf(new HomeProductType()),
-                    'resolve' => fn() => $resolvers->product()->getForHome()
+                    'resolve' => fn() => $resolvers->product()->getAllProducts()
                 ],
-                // Later: 'products' => [...],
+                'product' => [
+                    'type' => new ProductType(),
+                    'args' => [
+                        'id' => Type::nonNull(Type::id()),
+                    ],
+                    'resolve' => fn($root, $args) => $resolvers->product()->getProduct($args['id']),
+                ],
             ],
         ]);
     }

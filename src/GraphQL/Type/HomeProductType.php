@@ -16,7 +16,10 @@ class HomeProductType extends ObjectType
                 'name' => Type::nonNull(Type::string()),
                 'brand' => Type::nonNull(Type::string()),
                 'category' => Type::nonNull(Type::string()),
-                'price' => Type::nonNull(Type::float()),
+                'price' => [
+                    'type' => TypeRegistry::price(),
+                    'resolve' => fn($product) => $product->price,
+                ],
                 'imageUrl' => [
                     'type' => Type::string(),
                     'resolve' => fn($product) => $product->gallery[0] ?? null,

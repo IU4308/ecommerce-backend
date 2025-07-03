@@ -1,6 +1,9 @@
 <?php
 
 namespace App\GraphQL\Resolver;
+use App\Model\Product;
+use App\Model\Product\BaseProduct;
+use App\Model\Product\DetailedProduct;
 use App\Model\Product\HomeProduct;
 
 use App\Repository\ProductRepository;
@@ -11,8 +14,12 @@ class ProductResolver
     {
     }
 
-    public function getForHome(): array
+    public function getAllProducts(): array
     {
-        return (new HomeProduct($this->repository))->get();
+        return $this->repository->getHomeListing();
+    }
+    public function getProduct(string $id): BaseProduct
+    {
+        return $this->repository->getProductDetails($id);
     }
 }

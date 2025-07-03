@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use GraphQL\Error\DebugFlag;
 use GraphQL\GraphQL as GraphQLBase;
 use RuntimeException;
 use Throwable;
@@ -28,15 +29,18 @@ class GraphQL
             $query = $input['query'];
             $variables = $input['variables'] ?? null;
 
-            $result = GraphQLBase::executeQuery(
-                $schema,
-                $query,
-                null,
-                null,
-                $variables
-            );
+            // $result = GraphQLBase::executeQuery(
+            //     $schema,
+            //     $query,
+            //     null,
+            //     null,
+            //     $variables
+            // );
 
-            $output = $result->toArray();
+            // $output = $result->toArray();
+
+            $result = GraphQLBase::executeQuery($schema, $query, null, null, $variables);
+            $output = $result->toArray(DebugFlag::INCLUDE_DEBUG_MESSAGE | DebugFlag::INCLUDE_TRACE);
         } catch (Throwable $e) {
             $output = [
                 'error' => [

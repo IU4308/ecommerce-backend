@@ -5,6 +5,7 @@ abstract class Attribute
 {
     public function __construct(
         protected string $name,
+        public readonly string $type,
         protected array $items
     ) {
     }

@@ -12,9 +12,18 @@ class AttributeType extends ObjectType
         parent::__construct([
             'name' => 'Attribute',
             'fields' => [
-                'name' => Type::nonNull(Type::string()),
-                'type' => Type::nonNull(Type::string()),
-                'items' => Type::listOf(new AttributeItemType()),
+                'name' => [
+                    'type' => Type::nonNull(Type::string()),
+                    'resolve' => fn($attr) => $attr->getName(),
+                ],
+                'type' => [
+                    'type' => Type::nonNull(Type::string()),
+                    'resolve' => fn($attr) => $attr->getType(),
+                ],
+                'items' => [
+                    'type' => Type::listOf(TypeRegistry::attributeItem()),
+                    'resolve' => fn($attr) => $attr->getItems(),
+                ]
             ]
         ]);
     }

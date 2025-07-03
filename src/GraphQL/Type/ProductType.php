@@ -19,10 +19,18 @@ class ProductType extends ObjectType
                     'description' => Type::nonNull(Type::string()),
                     'category' => Type::nonNull(Type::string()),
                     'brand' => Type::nonNull(Type::string()),
-
-                    'gallery' => Type::listOf(Type::string()),
-                    'prices' => Type::listOf(new ProductPriceType()),
-                    'attributes' => Type::listOf(new AttributeType()),
+                    'price' => [
+                        'type' => TypeRegistry::price(),
+                        'resolve' => fn($product) => $product->price,
+                    ],
+                    'gallery' => [
+                        'type' => Type::listOf(Type::string()),
+                        'resolve' => fn($product) => $product->gallery,
+                    ],
+                    'attributes' => [
+                        'type' => Type::listOf(new AttributeType()),
+                        'resolve' => fn($product) => $product->attributes,
+                    ]
                 ];
             }
         ]);
