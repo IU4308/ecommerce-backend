@@ -2,17 +2,16 @@
 
 namespace App\GraphQL\Resolver;
 
-use App\Model\Category;
-use App\Repository\CategoryRepository;
+use App\Factory\CategoryFactory;
 
 class CategoryResolver
 {
-    public function __construct()
+    public function __construct(private CategoryFactory $categoryFactory)
     {
     }
 
     public function getCategories(): array
     {
-        return Category::getAll();
+        return $this->categoryFactory->loadMany();
     }
 }

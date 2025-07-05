@@ -2,32 +2,26 @@
 
 namespace App\Model;
 
+use App\Service\AttributeService;
+
 class Attribute extends Model
 {
     protected static string $table = 'product_attributes';
 
-    public string $product_id;
-    public string $attribute_name;
-    public string $attribute_type;
+    public string $productId;
+    public string $attributeName;
+    public string $attributeType;
 
     /** @var AttributeItem[] */
     public array $items = [];
 
-    public static function getByProductId(string $productId): array
-    {
-        $rows = static::$connection->createQueryBuilder()
-            ->select('a.product_id', 'a.attribute_name', 'a.attribute_type', 'i.item_id', 'i.display_value', 'i.value')
-            ->from('product_attributes', 'a')
-            ->leftJoin('a', 'attribute_items', 'i', 'a.product_id = i.product_id AND a.attribute_name = i.attribute_name')
-            ->where('a.product_id = :id')
-            ->setParameter('id', $productId)
-            ->executeQuery()
-            ->fetchAllAssociative();
+    // public static function getByProductId(string $productId): array
+    // {
+    //     $rows = (new AttributeService(static::$connection))->fetchByProductId($productId);
+    //     return static::groupAttributes($rows);
+    // }
 
-        return static::groupAttributes($rows);
-    }
-
-    private static function groupAttributes(array $rows): array
+    public static function groupAttributes(array $rows): array
     {
         $grouped = [];
 

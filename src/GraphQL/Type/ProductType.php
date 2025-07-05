@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Type;
 
+use App\Model\Product;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 
@@ -11,28 +12,22 @@ class ProductType extends ObjectType
     {
         parent::__construct([
             'name' => 'Product',
-            'fields' => function () {
-                return [
-                    'id' => Type::nonNull(Type::id()),
-                    'name' => Type::nonNull(Type::string()),
-                    'in_stock' => Type::nonNull(Type::boolean()),
-                    'description' => Type::nonNull(Type::string()),
-                    'category' => Type::nonNull(Type::string()),
-                    'brand' => Type::nonNull(Type::string()),
-                    'price' => [
-                        'type' => TypeRegistry::price(),
-                        'resolve' => fn($product) => $product->price,
-                    ],
-                    'gallery' => [
-                        'type' => Type::listOf(Type::string()),
-                        'resolve' => fn($product) => $product->gallery,
-                    ],
-                    'attributes' => [
-                        'type' => Type::listOf(new AttributeType()),
-                        'resolve' => fn($product) => $product->attributes,
-                    ]
-                ];
-            }
+            'fields' => fn() => [
+                'id' => Type::nonNull(Type::id()),
+                'name' => Type::string(),
+                'brand' => Type::string(),
+                'category' => Type::string(),
+                'description' => Type::string(),
+                'inStock' => Type::boolean(),
+
+                // Optional nested data
+                'price' => TypeRegistry::price(), // nullable by default
+                'gallery' => [
+                    'type' => Type::listOf(Type::string()),
+                    'resolve' => fn(Product $product) => array_map(fn($g) => $g->imageUrl, $product->gallery),
+                ],
+                'attributes' => Type::listOf(TypeRegistry::attribute()),
+            ],
         ]);
     }
 }

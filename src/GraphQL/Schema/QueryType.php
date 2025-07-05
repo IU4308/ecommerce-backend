@@ -3,9 +3,7 @@
 namespace App\GraphQL\Schema;
 
 use App\GraphQL\Resolver\ResolverContainer;
-use App\GraphQL\Type\CategoryType;
-use App\GraphQL\Type\HomeProductType;
-use App\GraphQL\Type\ProductType;
+use App\GraphQL\Type\TypeRegistry;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 
@@ -17,15 +15,15 @@ class QueryType extends ObjectType
             'name' => 'Query',
             'fields' => [
                 'categories' => [
-                    'type' => Type::listOf(new CategoryType()),
+                    'type' => Type::listOf(TypeRegistry::category()),
                     'resolve' => fn() => $resolvers->category()->getCategories(),
                 ],
                 'products' => [
-                    'type' => Type::listOf(new HomeProductType()),
+                    'type' => Type::listOf(TypeRegistry::product()),
                     'resolve' => fn() => $resolvers->product()->getAllProducts()
                 ],
                 'product' => [
-                    'type' => new ProductType(),
+                    'type' => TypeRegistry::product(),
                     'args' => [
                         'id' => Type::nonNull(Type::id()),
                     ],
@@ -35,4 +33,5 @@ class QueryType extends ObjectType
         ]);
     }
 }
+
 

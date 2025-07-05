@@ -2,28 +2,27 @@
 
 namespace App\GraphQL\Resolver;
 
-use App\Repository\AttributeRepository;
-use App\Repository\CategoryRepository;
-use App\Repository\ProductRepository;
-use App\Repository\ProductAttributeRepository;
-use App\Repository\ProductGalleryRepository;
-use App\Repository\ProductPriceRepository;
+use App\Factory\ProductFactory;
 use Doctrine\DBAL\Connection;
+use App\Factory\CategoryFactory;
 
 class ResolverContainer
 {
-    public function __construct(
-        private Connection $connection
-    ) {
+    public function __construct(private Connection $connection)
+    {
     }
 
     public function category(): CategoryResolver
     {
-        return new CategoryResolver();
+        return new CategoryResolver(
+            new CategoryFactory($this->connection)
+        );
     }
 
     public function product(): ProductResolver
     {
-        return new ProductResolver();
+        return new ProductResolver(
+            new ProductFactory($this->connection)
+        );
     }
 }

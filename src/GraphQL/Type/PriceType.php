@@ -4,17 +4,16 @@ namespace App\GraphQL\Type;
 
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-
-class AttributeItemType extends ObjectType
+class PriceType extends ObjectType
 {
     public function __construct()
     {
         parent::__construct([
-            'name' => 'AttributeItem',
+            'name' => 'Price',
             'fields' => [
-                'itemId' => Type::id(),
-                'value' => Type::string(),
-                'displayValue' => Type::string(),
+                'amount' => Type::float(),
+                'currencyLabel' => Type::string(),
+                'currencySymbol' => Type::string(),
             ],
         ]);
     }

@@ -11,32 +11,34 @@ use App\GraphQL\Type\HomeProductType;
 
 class TypeRegistry
 {
-    private static array $types = [];
+    private static ?ProductType $product = null;
+    private static ?CategoryType $category = null;
+    private static ?PriceType $price = null;
+    private static ?AttributeType $attribute = null;
+    private static ?AttributeItemType $attributeItem = null;
 
-    public static function price(): ProductPriceType
+    public static function product(): ProductType
     {
-        return self::$types['Price'] ??= new ProductPriceType();
+        return self::$product ??= new ProductType();
+    }
+
+    public static function category(): CategoryType
+    {
+        return self::$category ??= new CategoryType();
+    }
+
+    public static function price(): PriceType
+    {
+        return self::$price ??= new PriceType();
     }
 
     public static function attribute(): AttributeType
     {
-        return self::$types['Attribute'] ??= new AttributeType();
+        return self::$attribute ??= new AttributeType();
     }
 
     public static function attributeItem(): AttributeItemType
     {
-        return self::$types['AttributeItem'] ??= new AttributeItemType();
+        return self::$attributeItem ??= new AttributeItemType();
     }
-
-    public static function product(): ProductType
-    {
-        return self::$types['Product'] ??= new ProductType();
-    }
-
-    public static function homeProduct(): HomeProductType
-    {
-        return self::$types['HomeProduct'] ??= new HomeProductType();
-    }
-
-    // Add other type getters as needed
 }

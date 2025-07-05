@@ -13,18 +13,16 @@ class AttributeType extends ObjectType
             'name' => 'Attribute',
             'fields' => [
                 'name' => [
-                    'type' => Type::nonNull(Type::string()),
-                    'resolve' => fn($attr) => $attr->getName(),
+                    'type' => Type::string(),
+                    'resolve' => fn($root) => $root->attributeName,
                 ],
                 'type' => [
-                    'type' => Type::nonNull(Type::string()),
-                    'resolve' => fn($attr) => $attr->getType(),
+                    'type' => Type::string(),
+                    'resolve' => fn($root) => $root->attributeType,
                 ],
-                'items' => [
-                    'type' => Type::listOf(TypeRegistry::attributeItem()),
-                    'resolve' => fn($attr) => $attr->getItems(),
-                ]
-            ]
+                'items' => Type::listOf(TypeRegistry::attributeItem()),
+            ],
         ]);
     }
 }
+
