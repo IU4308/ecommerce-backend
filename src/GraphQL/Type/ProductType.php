@@ -15,7 +15,7 @@ class ProductType extends ObjectType
                 return [
                     'id' => Type::nonNull(Type::id()),
                     'name' => Type::nonNull(Type::string()),
-                    'inStock' => Type::nonNull(Type::boolean()),
+                    'in_stock' => Type::nonNull(Type::boolean()),
                     'description' => Type::nonNull(Type::string()),
                     'category' => Type::nonNull(Type::string()),
                     'brand' => Type::nonNull(Type::string()),

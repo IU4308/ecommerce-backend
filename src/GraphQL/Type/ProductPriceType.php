@@ -12,8 +12,8 @@ class ProductPriceType extends ObjectType
         parent::__construct([
             'name' => 'ProductPrice',
             'fields' => [
-                'currencyLabel' => Type::nonNull(Type::string()),
-                'currencySymbol' => Type::nonNull(Type::string()),
+                'currency_label' => Type::nonNull(Type::string()),
+                'currency_symbol' => Type::nonNull(Type::string()),
                 'amount' => Type::nonNull(Type::float()),
             ]
         ]);

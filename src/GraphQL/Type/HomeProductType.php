@@ -24,7 +24,7 @@ class HomeProductType extends ObjectType
                     'type' => Type::string(),
                     'resolve' => fn($product) => $product->gallery[0] ?? null,
                 ],
-                'inStock' => Type::nonNull(Type::boolean()),
+                'in_stock' => Type::nonNull(Type::boolean()),
             ]
         ]);
     }

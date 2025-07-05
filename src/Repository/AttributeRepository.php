@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Model;
+namespace App\Repository;
 
-class Attribute extends Model
+use App\Model\Attribute;
+use App\Model\AttributeItem;
+use Doctrine\DBAL\Connection;
+
+class AttributeRepository
 {
-    protected static string $table = 'product_attributes';
-
-    public string $product_id;
-    public string $attribute_name;
-    public string $attribute_type;
-
-    /** @var AttributeItem[] */
-    public array $items = [];
-
-    public static function getByProductId(string $productId): array
+    public function __construct(private Connection $db)
     {
-        $rows = static::$connection->createQueryBuilder()
+        Attribute::setConnection($db);
+    }
+
+    public function get(string $productId): array
+    {
+        $rows = $this->db->createQueryBuilder()
             ->select('a.product_id', 'a.attribute_name', 'a.attribute_type', 'i.item_id', 'i.display_value', 'i.value')
             ->from('product_attributes', 'a')
             ->leftJoin('a', 'attribute_items', 'i', 'a.product_id = i.product_id AND a.attribute_name = i.attribute_name')
@@ -24,10 +24,10 @@ class Attribute extends Model
             ->executeQuery()
             ->fetchAllAssociative();
 
-        return static::groupAttributes($rows);
+        return $this->buildAttributeModels($rows);
     }
 
-    private static function groupAttributes(array $rows): array
+    private function buildAttributeModels(array $rows): array
     {
         $grouped = [];
 
@@ -55,15 +55,8 @@ class Attribute extends Model
         }
 
         return array_map(
-            fn($data) => static::withItems($data['row'], $data['items']),
+            fn($data) => Attribute::withItems($data['row'], $data['items']),
             array_values($grouped)
         );
-    }
-
-    public static function withItems(array $row, array $items): static
-    {
-        $attr = static::hydrate($row);
-        $attr->items = $items;
-        return $attr;
     }
 }

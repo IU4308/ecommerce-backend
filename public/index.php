@@ -5,6 +5,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use App\Config\Config;
 use App\Config\Database;
 use App\Controller\GraphQL;
+use App\Model\Model;
 
 
 $config = new Config(__DIR__ . '/../');
@@ -28,6 +29,8 @@ $db = new Database(
 try {
     // $pdo = $db->connect();
     $connection = $db->connect();
+
+    Model::setConnection($connection);
 
     echo (new GraphQL())->handle($connection);
 } catch (Throwable $e) {

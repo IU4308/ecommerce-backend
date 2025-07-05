@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Factory\CategoryFactory;
+use App\Model\Category;
 use Doctrine\DBAL\Connection;
 
 class CategoryRepository
@@ -13,10 +14,6 @@ class CategoryRepository
 
     public function getAll(): array
     {
-        $qb = $this->db->createQueryBuilder();
-        $qb->select('name')
-            ->from('categories');
-        $rows = $qb->executeQuery()->fetchAllAssociative();
-        return array_map(fn($row) => CategoryFactory::make($row['name']), $rows);
+        return Category::getAll();
     }
 }

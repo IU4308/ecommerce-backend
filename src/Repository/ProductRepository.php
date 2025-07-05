@@ -2,110 +2,57 @@
 
 namespace App\Repository;
 
-use App\Model\Product\BaseProduct;
+use App\Model\Product;
 use App\Model\ProductPrice;
-use App\Model\AttributeItem;
-use App\Model\SwatchAttribute;
-use App\Model\TextAttribute;
 use Doctrine\DBAL\Connection;
 
 class ProductRepository
 {
-    public function __construct(private Connection $db)
+    public function __construct(
+        private Connection $db,
+        private AttributeRepository $attributeRepo,
+        private ProductGalleryRepository $galleryRepo,
+    ) {
+        Product::setConnection($db);
+    }
+
+    public function getProductDetails(string $productId): Product
     {
+        $row = Product::get($productId);
+        if (!$row) {
+            throw new \RuntimeException("Product not found: $productId");
+        }
+
+        $product = Product::fromArray($row);
+        $product->price = $this->getPrice($productId);
+        $product->gallery = $this->galleryRepo->get($productId);
+        $product->attributes = $this->attributeRepo->get($productId);
+
+        return $product;
+    }
+
+    private function getPrice(string $productId): ProductPrice
+    {
+        $row = $this->db->createQueryBuilder()
+            ->select('*')
+            ->from('product_prices')
+            ->where('product_id = :id')
+            ->setParameter('id', $productId)
+            ->executeQuery()
+            ->fetchAssociative();
+
+        return new ProductPrice(
+            product_id: $row['product_id'],
+            currency_label: $row['currency_label'],
+            currency_symbol: $row['currency_symbol'],
+            amount: (float) $row['amount']
+        );
     }
 
     public function getHomeListing(): array
     {
         $rows = $this->fetchHomeListingRows();
         return array_map([$this, 'mapRowToProduct'], $rows);
-    }
-
-    public function getProductDetails(string $productId): BaseProduct
-    {
-        $rows = $this->fetchProductDetails($productId);
-        $productData = $rows[0];
-
-        $attributes = $this->buildAttributeObjects($rows);
-        $gallery = $this->fetchProductGallery($productId);
-
-        return $this->buildProductFromRow($productData, $gallery, $attributes);
-    }
-
-    // ----------------- Internals -----------------
-
-    private function buildAttributeObjects(array $rows): array
-    {
-        $grouped = [];
-
-        foreach ($rows as $row) {
-            if (!$row['attribute_name']) {
-                continue;
-            }
-
-            $name = $row['attribute_name'];
-            $type = $row['attribute_type'];
-
-            if (!isset($grouped[$name])) {
-                $grouped[$name] = [
-                    'type' => $type,
-                    'items' => [],
-                ];
-            }
-
-            $grouped[$name]['items'][] = new AttributeItem(
-                itemId: $row['item_id'],
-                value: $row['value'],
-                displayValue: $row['display_value']
-            );
-        }
-
-        return array_map(function ($name, $data) {
-            return match ($data['type']) {
-                'swatch' => new SwatchAttribute($name, $data['type'], $data['items']),
-                'text' => new TextAttribute($name, $data['type'], $data['items']),
-            };
-        }, array_keys($grouped), $grouped);
-    }
-
-    private function buildProductFromRow(array $row, array $gallery, array $attributes = []): BaseProduct
-    {
-        $price = new ProductPrice(
-            productId: $row['id'],
-            amount: (float) $row['amount'],
-            currencyLabel: $row['currency_label'],
-            currencySymbol: $row['currency_symbol']
-        );
-
-        return $this->createProductInstance($row['category'], [
-            $row['id'],
-            $row['name'],
-            $row['brand'],
-            $row['category'],
-            (bool) $row['in_stock'],
-            $price,
-            $gallery,
-            $attributes,
-            $row['description'] ?? '',
-        ]);
-    }
-
-    private function mapRowToProduct(array $row): BaseProduct
-    {
-        $gallery = [$row['image_url']];
-
-        return $this->buildProductFromRow($row, $gallery);
-    }
-
-    private function createProductInstance(string $category, array $args): BaseProduct
-    {
-        $map = [
-            'tech' => \App\Model\Product\TechProduct::class,
-            'clothes' => \App\Model\Product\ClothProduct::class,
-        ];
-
-        $class = $map[$category];
-        return new $class(...$args);
     }
 
     private function fetchHomeListingRows(): array
@@ -130,43 +77,37 @@ class ProductRepository
             ->fetchAllAssociative();
     }
 
-    private function fetchProductDetails(string $productId): array
+    private function mapRowToProduct(array $row): BaseProduct
     {
-        return $this->db->createQueryBuilder()
-            ->select(
-                'p.id',
-                'p.name',
-                'p.brand',
-                'p.category',
-                'p.in_stock',
-                'p.description',
-                'pp.amount',
-                'pp.currency_label',
-                'pp.currency_symbol',
-                'a.attribute_name',
-                'a.attribute_type',
-                'i.item_id',
-                'i.display_value',
-                'i.value'
-            )
-            ->from('products', 'p')
-            ->leftJoin('p', 'product_attributes', 'a', 'p.id = a.product_id')
-            ->leftJoin('p', 'attribute_items', 'i', 'p.id = i.product_id AND a.attribute_name = i.attribute_name')
-            ->innerJoin('p', 'product_prices', 'pp', 'p.id = pp.product_id')
-            ->where('p.id = :productId')
-            ->setParameter('productId', $productId)
-            ->executeQuery()
-            ->fetchAllAssociative();
+        $gallery = [$row['image_url']];
+
+        return $this->buildProductFromRow($row, $gallery);
     }
 
-    private function fetchProductGallery(string $productId): array
+    private function buildProductFromRow(array $row, array $gallery, array $attributes = []): BaseProduct
     {
-        return $this->db->createQueryBuilder()
-            ->select('image_url')
-            ->from('product_gallery')
-            ->where('product_id = :id')
-            ->setParameter('id', $productId)
-            ->executeQuery()
-            ->fetchFirstColumn();
+        $price = new ProductPrice(
+            productId: $row['id'],
+            amount: (float) $row['amount'],
+            currencyLabel: $row['currency_label'],
+            currencySymbol: $row['currency_symbol']
+        );
+
+        return $this->createProductInstance($row['category'], [
+            $row['id'],
+            $row['name'],
+            $row['brand'],
+            $row['category'],
+            (bool) $row['in_stock'],
+            $price,
+            $gallery,
+            $attributes,
+            $row['description'] ?? '',
+        ]);
     }
+
+
+
+
 }
+

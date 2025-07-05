@@ -2,13 +2,18 @@
 
 namespace App\Model;
 
-class ProductPrice
+class ProductPrice extends Model
 {
-    public function __construct(
-        public readonly string $productId,
-        public readonly string $currencyLabel,
-        public readonly string $currencySymbol,
-        public readonly float $amount,
-    ) {
+    protected static string $table = 'product_prices';
+    public string $product_id;
+    public string $currency_label;
+    public string $currency_symbol;
+    public float $amount;
+
+    public static function getByProductId(string $productId): ProductPrice
+    {
+        $rows = parent::findBy(['product_id' => $productId]);
+        $row = $rows[0];
+        return static::hydrate($row);
     }
 }
