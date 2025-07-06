@@ -29,6 +29,13 @@ class QueryType extends ObjectType
                     ],
                     'resolve' => fn($root, $args) => $resolvers->product()->getProduct($args['id']),
                 ],
+                'productAttributes' => [
+                    'type' => Type::listOf(TypeRegistry::attribute()),
+                    'args' => [
+                        'productId' => Type::nonNull(Type::id()),
+                    ],
+                    'resolve' => fn($root, $args) => $resolvers->attribute()->getProductAttributes($args['productId']),
+                ]
             ],
         ]);
     }

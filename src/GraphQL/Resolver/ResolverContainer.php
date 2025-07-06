@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Resolver;
 
+use App\Factory\AttributeFactory;
 use App\Factory\ProductFactory;
 use Doctrine\DBAL\Connection;
 use App\Factory\CategoryFactory;
@@ -23,6 +24,13 @@ class ResolverContainer
     {
         return new ProductResolver(
             new ProductFactory($this->connection)
+        );
+    }
+
+    public function attribute(): AttributeResolver
+    {
+        return new AttributeResolver(
+            new AttributeFactory($this->connection)
         );
     }
 }
