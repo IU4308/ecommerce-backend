@@ -9,7 +9,7 @@ class ProductService extends Service
         return 'products';
     }
 
-    public function getAll(): array
+    public function getAll($arg = null): array
     {
         return $this->connection->createQueryBuilder()
             ->select(

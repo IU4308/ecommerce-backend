@@ -9,7 +9,7 @@ class AttributeService extends Service
         return 'product_attributes';
     }
 
-    public function getByProductId(string $productId): array
+    public function getAll($arg = null): array
     {
         return $this->connection->createQueryBuilder()
             ->select('a.product_id', 'a.attribute_name', 'a.attribute_type', 'i.item_id', 'i.display_value', 'i.value')
@@ -21,7 +21,7 @@ class AttributeService extends Service
                 'a.product_id = i.product_id AND a.attribute_name = i.attribute_name'
             )
             ->where('a.product_id = :id')
-            ->setParameter('id', $productId)
+            ->setParameter('id', $arg)
             ->executeQuery()
             ->fetchAllAssociative();
     }

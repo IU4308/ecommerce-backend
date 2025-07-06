@@ -2,12 +2,8 @@
 
 namespace App\Model;
 
-use App\Service\AttributeService;
-
 class Attribute extends Model
 {
-    protected static string $table = 'product_attributes';
-
     public string $productId;
     public string $attributeName;
     public string $attributeType;
@@ -15,13 +11,7 @@ class Attribute extends Model
     /** @var AttributeItem[] */
     public array $items = [];
 
-    // public static function getByProductId(string $productId): array
-    // {
-    //     $rows = (new AttributeService(static::$connection))->fetchByProductId($productId);
-    //     return static::groupAttributes($rows);
-    // }
-
-    public static function groupAttributes(array $rows): array
+    public static function hydrateAll(array $rows): array
     {
         $grouped = [];
 
@@ -40,24 +30,29 @@ class Attribute extends Model
             }
 
             if ($row['item_id']) {
-                $grouped[$name]['items'][] = new AttributeItem(
-                    itemId: $row['item_id'],
-                    value: $row['value'],
-                    displayValue: $row['display_value']
-                );
+                $grouped[$name]['items'][] = AttributeItem::hydrate([
+                    'item_id' => $row['item_id'],
+                    'value' => $row['value'],
+                    'display_value' => $row['display_value'],
+                ]);
             }
+
         }
 
         return array_map(
-            fn($data) => static::withItems($data['row'], $data['items']),
+            fn($data) => static::hydrate($data['row'] + ['items' => $data['items']]),
             array_values($grouped)
         );
     }
 
-    public static function withItems(array $row, array $items): static
+    public static function hydrate(array $data): static
     {
-        $attr = static::hydrate($row);
-        $attr->items = $items;
-        return $attr;
+        $obj = parent::hydrate($data);
+
+        if (isset($data['items']) && is_array($data['items'])) {
+            $obj->items = $data['items'];
+        }
+
+        return $obj;
     }
 }

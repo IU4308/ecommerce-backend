@@ -9,9 +9,9 @@ class GalleryService extends Service
         return 'product_gallery';
     }
 
-    public function getByProductId(string $productId): array
+    public function getAll($arg = null): array
     {
-        return $this->getBy('product_id', $productId);
+        return $this->getBy('product_id', $arg);
     }
 
 }

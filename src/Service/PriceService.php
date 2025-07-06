@@ -9,7 +9,7 @@ class PriceService extends Service
         return 'product_prices';
     }
 
-    public function getByProductId(string $productId): array
+    public function get(string $productId): array
     {
         return $this->getBy('product_id', $productId)[0] ?? [];
     }

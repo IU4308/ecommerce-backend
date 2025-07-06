@@ -13,15 +13,6 @@ abstract class Model
         static::$connection = $conn;
     }
 
-    // public static function setGlobalConnection(Connection $conn): void
-    // {
-    //     foreach (get_declared_classes() as $class) {
-    //         if (is_subclass_of($class, self::class)) {
-    //             $class::setConnection($conn);
-    //         }
-    //     }
-    // }
-
     public static function hydrate(array $data): static
     {
         $obj = new static();

@@ -4,21 +4,26 @@ namespace App\Factory;
 
 use App\Model\Attribute;
 use App\Service\AttributeService;
-use Doctrine\DBAL\Connection;
 
-class AttributeFactory
+class AttributeFactory extends Factory
 {
-    public function __construct(private Connection $connection)
+
+    protected function modelClass(): string
     {
+        return Attribute::class;
     }
 
+    protected function serviceClass(): string
+    {
+        return AttributeService::class;
+    }
     /**
      * @return Attribute[]
      */
-    public function loadMany(string $productId, $method): array
+    public function loadMany($arg = null, $method = 'getAll'): array
     {
         $service = new AttributeService($this->connection);
-        $rows = $service->$method($productId);
-        return Attribute::groupAttributes($rows);
+        $rows = $service->$method($arg);
+        return Attribute::hydrateAll($rows);
     }
 }

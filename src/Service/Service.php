@@ -24,7 +24,7 @@ abstract class Service
             ->fetchAssociative() ?: null;
     }
 
-    public function getAll(): array
+    public function getAll($arg = null): array
     {
         return $this->connection->createQueryBuilder()
             ->select('*')

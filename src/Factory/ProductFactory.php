@@ -20,20 +20,14 @@ class ProductFactory extends Factory
     }
 
 
-    public function load(string $id, string $method = 'getByProductId'): Product
+    public function load(string $id, string $method = 'get'): Product
     {
-        $product = parent::load($id, 'get');
-        $product->price = (new PriceFactory($this->connection))->load($id, $method);
-        $product->gallery = (new GalleryFactory($this->connection))->loadMany($id, $method);
-        $product->attributes = (new AttributeFactory($this->connection))->loadMany($id, $method);
+        $product = parent::load($id);
+        $product->price = (new PriceFactory($this->connection))->load($id);
+        $product->gallery = (new GalleryFactory($this->connection))->loadMany($id);
+        $product->attributes = (new AttributeFactory($this->connection))->loadMany($id);
         return $product;
     }
-
-    // public function loadMany($method = 'getAll', $arg = null): array
-    // {
-    //     $rows = parent::loadMany($method, $arg);
-    //     return array_map([$this, 'mapRow'], $rows);
-    // }
 
     protected function mapRow(array $row): Product
     {
