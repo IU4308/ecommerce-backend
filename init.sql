@@ -48,6 +48,31 @@ CREATE TABLE product_gallery (
     FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
+CREATE TABLE orders (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE order_items (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT NOT NULL,
+  product_id VARCHAR(255) NOT NULL,
+  quantity INT NOT NULL,
+  FOREIGN KEY (order_id) REFERENCES orders(id),
+  FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+
+CREATE TABLE order_attributes (
+  order_item_id INT NOT NULL,
+  attribute_name VARCHAR(255) NOT NULL,
+  item_id VARCHAR(255) NOT NULL,
+  PRIMARY KEY (order_item_id, attribute_name),
+  FOREIGN KEY (order_item_id) REFERENCES order_items(id)
+);
+
+
+
 
 INSERT INTO categories (name) VALUES ('all');
 INSERT INTO categories (name) VALUES ('clothes');

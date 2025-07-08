@@ -2,10 +2,10 @@
 
 namespace App\GraphQL\Schema;
 
-use App\GraphQL\Resolver\ResolverContainer;
-use App\GraphQL\Type\TypeRegistry;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use App\GraphQL\Resolver\ResolverContainer;
+use App\GraphQL\Type\TypeRegistry;
 
 class QueryType extends ObjectType
 {

@@ -1,9 +1,8 @@
 <?php
 
-namespace App\GraphQL;
+namespace App\GraphQL\Schema;
 
 use App\GraphQL\Resolver\ResolverContainer;
-use App\GraphQL\Schema\QueryType;
 use GraphQL\Type\Schema;
 use GraphQL\Type\SchemaConfig;
 use Doctrine\DBAL\Connection;
@@ -17,7 +16,7 @@ class SchemaBuilder
         return new Schema(
             (new SchemaConfig())
                 ->setQuery(new QueryType($resolvers))
-            // ->setMutation(new MutationType($resolvers))
+                ->setMutation(new MutationType($resolvers))
         );
     }
 }
