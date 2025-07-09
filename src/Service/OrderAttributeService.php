@@ -11,9 +11,23 @@ class OrderAttributeService extends Service
 
     public function insertMany(array $rows): void
     {
-        if (!$rows)
+        if (empty($rows)) {
             return;
+        }
 
+        [$placeholders, $params] = $this->buildInsertData($rows);
+
+        $sql = sprintf(
+            "INSERT INTO %s (order_item_id, attribute_name, item_id) VALUES %s",
+            $this->table(),
+            implode(', ', $placeholders)
+        );
+
+        $this->connection->executeStatement($sql, $params);
+    }
+
+    private function buildInsertData(array $rows): array
+    {
         $placeholders = [];
         $params = [];
 
@@ -24,7 +38,6 @@ class OrderAttributeService extends Service
             $params[] = $row['item_id'];
         }
 
-        $sql = "INSERT INTO order_attributes (order_item_id, attribute_name, item_id) VALUES " . implode(', ', $placeholders);
-        $this->connection->executeStatement($sql, $params);
+        return [$placeholders, $params];
     }
 }

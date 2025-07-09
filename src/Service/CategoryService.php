@@ -8,14 +8,4 @@ class CategoryService extends Service
     {
         return 'categories';
     }
-
-    // public function getById(string $id): ?array
-    // {
-    //     return $this->getById($id);
-    // }
-
-    // public function getAll(): array
-    // {
-    //     return $this->getAll();
-    // }
 }

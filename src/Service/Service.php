@@ -44,13 +44,4 @@ abstract class Service
             ->fetchAllAssociative();
     }
 
-    public function create(): int
-    {
-        return 0;
-    }
-
-    // public function insertMany(int $id, array $items): int
-    // {
-    //     return 0;
-    // }
 }

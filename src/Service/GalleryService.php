@@ -13,5 +13,4 @@ class GalleryService extends Service
     {
         return $this->getBy('product_id', $arg);
     }
-
 }

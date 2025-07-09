@@ -36,7 +36,9 @@ class OrderFactory extends Factory
         $this->connection->beginTransaction();
 
         try {
-            $orderId = $this->service->create();
+            /** @var OrderService $service */
+            $service = $this->service;
+            $orderId = $service->create();
 
             $items = $input['items'];
             $orderItems = $this->orderItemFactory->createMany($orderId, $items);
