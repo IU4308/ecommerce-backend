@@ -17,15 +17,20 @@ class OrderAttributeFactory extends Factory
         return OrderAttributeService::class;
     }
 
-    /**
-     * Prepares attribute rows and inserts them.
-     */
-    public function createAndInsert(array $orderItems, array $itemsInput): void
+    public function createMany(array $orderItems, array $itemsInput): void
     {
-        $attributeRows = [];
+        $rows = $this->buildAttributeRows($orderItems, $itemsInput);
+        /** @var OrderAttributeService $this->service */
+        $this->service->insertMany($rows);
+    }
+
+    private function buildAttributeRows(array $orderItems, array $itemsInput): array
+    {
+        $rows = [];
+
         foreach ($orderItems as $i => $orderItem) {
             foreach ($itemsInput[$i]['selectedAttributes'] ?? [] as $attr) {
-                $attributeRows[] = [
+                $rows[] = [
                     'order_item_id' => $orderItem->id,
                     'attribute_name' => $attr['attributeName'],
                     'item_id' => $attr['itemId'],
@@ -33,8 +38,7 @@ class OrderAttributeFactory extends Factory
             }
         }
 
-        /** @var OrderAttributeService $service */
-        $service = $this->makeService();
-        $service->insertMany($attributeRows);
+        return $rows;
     }
 }
+

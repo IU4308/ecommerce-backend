@@ -2,12 +2,15 @@
 
 namespace App\Factory;
 
+use App\Service\Service;
 use Doctrine\DBAL\Connection;
 
 abstract class Factory
 {
+    protected Service $service;
     public function __construct(protected Connection $connection)
     {
+        $this->service = $this->makeService();
     }
 
     abstract protected function modelClass(): string;
@@ -21,17 +24,15 @@ abstract class Factory
 
     public function load(string $id, string $method = 'get'): object
     {
-        $service = $this->makeService();
-        $row = $service->$method($id);
+        $row = $this->service->$method($id);
         return ($this->modelClass())::hydrate($row);
     }
 
     public function loadMany($arg = null, $method = 'getAll'): array
     {
-        $service = $this->makeService();
         $rows = $arg === null
-            ? $service->$method()
-            : $service->$method($arg);
+            ? $this->service->$method()
+            : $this->service->$method($arg);
 
         return array_map([$this, 'mapRow'], $rows);
     }

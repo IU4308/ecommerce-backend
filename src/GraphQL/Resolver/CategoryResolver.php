@@ -4,14 +4,10 @@ namespace App\GraphQL\Resolver;
 
 use App\Factory\CategoryFactory;
 
-class CategoryResolver
+class CategoryResolver extends Resolver
 {
-    public function __construct(private CategoryFactory $categoryFactory)
+    public function __construct(CategoryFactory $factory)
     {
-    }
-
-    public function getCategories(): array
-    {
-        return $this->categoryFactory->loadMany();
+        parent::__construct($factory);
     }
 }

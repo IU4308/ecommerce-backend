@@ -16,25 +16,25 @@ class QueryType extends ObjectType
             'fields' => [
                 'categories' => [
                     'type' => Type::listOf(TypeRegistry::category()),
-                    'resolve' => fn() => $resolvers->category()->getCategories(),
+                    'resolve' => fn() => $resolvers->category()->getAll(),
                 ],
                 'products' => [
                     'type' => Type::listOf(TypeRegistry::product()),
-                    'resolve' => fn() => $resolvers->product()->getAllProducts()
+                    'resolve' => fn() => $resolvers->product()->getAll()
                 ],
                 'product' => [
                     'type' => TypeRegistry::product(),
                     'args' => [
                         'id' => Type::nonNull(Type::id()),
                     ],
-                    'resolve' => fn($root, $args) => $resolvers->product()->getProduct($args['id']),
+                    'resolve' => fn($root, $args) => $resolvers->product()->getById($args['id']),
                 ],
                 'productAttributes' => [
                     'type' => Type::listOf(TypeRegistry::attribute()),
                     'args' => [
                         'productId' => Type::nonNull(Type::id()),
                     ],
-                    'resolve' => fn($root, $args) => $resolvers->attribute()->getProductAttributes($args['productId']),
+                    'resolve' => fn($root, $args) => $resolvers->attribute()->getByParentId($args['productId']),
                 ]
             ],
         ]);

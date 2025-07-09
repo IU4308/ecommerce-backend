@@ -17,30 +17,31 @@ class OrderItemFactory extends Factory
         return OrderItemService::class;
     }
 
-    /**
-     * Inserts items for the given order ID, then hydrates and returns OrderItem models.
-     *
-     * @param int $orderId
-     * @param array $items Raw input items (with productId, quantity, etc.)
-     * @return OrderItem[]
-     */
-    public function createAndInsert(int $orderId, array $items): array
+    public function createMany(int $orderId, array $items): array
     {
         /** @var OrderItemService $service */
-        $service = $this->makeService();
-        // Insert items and get the first inserted ID
+        $service = $this->service;
         $firstItemId = $service->insertMany($orderId, $items);
+        return $this->hydrateWithGeneratedIds($items, $firstItemId);
+    }
 
-        // Hydrate models with assigned IDs
-        $orderItems = [];
-        foreach ($items as $i => $item) {
-            $orderItems[] = OrderItem::hydrate([
-                'id' => $firstItemId + $i,
+    /**
+     * Hydrates items using the first auto-incremented ID.
+     *
+     * @param array $items
+     * @param int $firstId
+     * @return OrderItem[]
+     */
+    private function hydrateWithGeneratedIds(array $items, int $firstId): array
+    {
+        return array_map(
+            fn($item, $i) => OrderItem::hydrate([
+                'id' => $firstId + $i,
                 'product_id' => $item['productId'],
                 'quantity' => $item['quantity'],
-            ]);
-        }
-
-        return $orderItems;
+            ]),
+            $items,
+            array_keys($items)
+        );
     }
 }

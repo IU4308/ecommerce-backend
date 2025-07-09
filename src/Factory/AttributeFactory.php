@@ -22,8 +22,7 @@ class AttributeFactory extends Factory
      */
     public function loadMany($arg = null, $method = 'getAll'): array
     {
-        $service = new AttributeService($this->connection);
-        $rows = $service->$method($arg);
+        $rows = $this->service->$method($arg);
         return Attribute::hydrateAll($rows);
     }
 }

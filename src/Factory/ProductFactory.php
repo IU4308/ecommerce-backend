@@ -6,9 +6,21 @@ use App\Model\Product;
 use App\Model\Price;
 use App\Model\Gallery;
 use App\Service\ProductService;
+use Doctrine\DBAL\Connection;
 
 class ProductFactory extends Factory
 {
+    protected PriceFactory $priceFactory;
+    protected GalleryFactory $galleryFactory;
+    protected AttributeFactory $attributeFactory;
+    public function __construct(Connection $connection, PriceFactory $priceFactory, GalleryFactory $galleryFactory, AttributeFactory $attributeFactory)
+    {
+        parent::__construct($connection);
+        $this->priceFactory = $priceFactory;
+        $this->galleryFactory = $galleryFactory;
+        $this->attributeFactory = $attributeFactory;
+    }
+
     protected function modelClass(): string
     {
         return Product::class;
@@ -23,9 +35,9 @@ class ProductFactory extends Factory
     public function load(string $id, string $method = 'get'): Product
     {
         $product = parent::load($id);
-        $product->price = (new PriceFactory($this->connection))->load($id);
-        $product->gallery = (new GalleryFactory($this->connection))->loadMany($id);
-        $product->attributes = (new AttributeFactory($this->connection))->loadMany($id);
+        $product->price = $this->priceFactory->load($id);
+        $product->gallery = $this->galleryFactory->loadMany($id);
+        $product->attributes = $this->attributeFactory->loadMany($id);
         return $product;
     }
 
