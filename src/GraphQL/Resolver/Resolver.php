@@ -2,6 +2,9 @@
 
 namespace App\GraphQL\Resolver;
 
+use App\Exception\NotFoundException;
+use GraphQL\Error\UserError;
+
 abstract class Resolver
 {
     protected object $factory;
@@ -13,20 +16,28 @@ abstract class Resolver
 
     public function getById(string $id): ?object
     {
-        if (method_exists($this->factory, 'load')) {
-            return $this->factory->load(id: $id);
+        if (!method_exists($this->factory, 'load')) {
+            throw new \BadMethodCallException('Method load() not implemented in factory.');
         }
 
-        throw new \BadMethodCallException('Method load() not implemented in factory.');
+        try {
+            return $this->factory->load($id);
+        } catch (NotFoundException $e) {
+            throw new UserError($e->getMessage());
+        }
     }
 
     public function getAll(): array
     {
-        if (method_exists($this->factory, 'loadMany')) {
-            return $this->factory->loadMany();
+        if (!method_exists($this->factory, 'loadMany')) {
+            throw new \BadMethodCallException('Method loadMany() not implemented in factory.');
         }
 
-        throw new \BadMethodCallException('Method loadMany() not implemented in factory.');
+        try {
+            return $this->factory->loadMany();
+        } catch (NotFoundException $e) {
+            throw new UserError($e->getMessage());
+        }
     }
 
     public function create(array $input): ?object
@@ -38,13 +49,17 @@ abstract class Resolver
         throw new \BadMethodCallException('Method create() not implemented in factory.');
     }
 
-    // Optional helper for factories that load many by parentId, e.g. attributes by productId
     public function getByParentId(string $parentId): array
     {
-        if (method_exists($this->factory, 'loadMany')) {
-            return $this->factory->loadMany($parentId);
+        if (!method_exists($this->factory, 'loadMany')) {
+            throw new \BadMethodCallException('Method loadMany() not implemented.');
         }
 
-        throw new \BadMethodCallException('Method loadMany() with parent ID not implemented.');
+        try {
+            return $this->factory->loadMany($parentId);
+        } catch (NotFoundException $e) {
+            throw new UserError($e->getMessage());
+        }
     }
+
 }

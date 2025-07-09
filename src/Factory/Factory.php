@@ -2,6 +2,7 @@
 
 namespace App\Factory;
 
+use App\Exception\NotFoundException;
 use App\Service\Service;
 use Doctrine\DBAL\Connection;
 
@@ -25,6 +26,9 @@ abstract class Factory
     public function load(string $id, string $method = 'get'): object
     {
         $row = $this->service->$method($id);
+        if (!$row) {
+            throw new NotFoundException("Item with ID $id not found");
+        }
         return ($this->modelClass())::hydrate($row);
     }
 
@@ -34,6 +38,9 @@ abstract class Factory
             ? $this->service->$method()
             : $this->service->$method($arg);
 
+        if (!$rows) {
+            throw new NotFoundException("Items not found");
+        }
         return array_map([$this, 'mapRow'], $rows);
     }
 
