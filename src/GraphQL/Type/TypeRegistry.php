@@ -17,9 +17,6 @@ class TypeRegistry
     private static ?OrderType $order = null;
     private static ?OrderItemInputType $orderItemInput = null;
 
-
-
-
     public static function product(): ProductType
     {
         return self::$product ??= new ProductType();

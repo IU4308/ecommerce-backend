@@ -1,5 +1,3 @@
-CREATE TABLE categories (name VARCHAR(255) PRIMARY KEY);
-
 CREATE TABLE categories (
     name VARCHAR(255) PRIMARY KEY
 );

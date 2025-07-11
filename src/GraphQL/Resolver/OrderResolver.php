@@ -11,7 +11,6 @@ class OrderResolver extends Resolver
         parent::__construct($factory);
     }
 
-    // For orders, you might only support creation:
     public function createOrder(array $input): object
     {
         return $this->create($input);

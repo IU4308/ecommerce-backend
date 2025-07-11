@@ -20,8 +20,7 @@ class ProductType extends ObjectType
                 'description' => Type::string(),
                 'inStock' => Type::boolean(),
 
-                // Optional nested data
-                'price' => TypeRegistry::price(), // nullable by default
+                'price' => TypeRegistry::price(),
                 'gallery' => [
                     'type' => Type::listOf(Type::string()),
                     'resolve' => fn(Product $product) => array_map(fn($g) => $g->imageUrl, $product->gallery),
