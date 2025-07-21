@@ -4,7 +4,7 @@ namespace App\Service;
 
 class OrderService extends Service
 {
-    protected function table(): string
+    protected function getTable(): string
     {
         return 'orders';
     }

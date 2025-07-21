@@ -4,7 +4,7 @@ namespace App\Service;
 
 class PriceService extends Service
 {
-    protected function table(): string
+    protected function getTable(): string
     {
         return 'product_prices';
     }

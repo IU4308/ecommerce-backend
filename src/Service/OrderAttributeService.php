@@ -4,7 +4,7 @@ namespace App\Service;
 
 class OrderAttributeService extends Service
 {
-    protected function table(): string
+    protected function getTable(): string
     {
         return 'order_attributes';
     }
@@ -19,7 +19,7 @@ class OrderAttributeService extends Service
 
         $sql = sprintf(
             "INSERT INTO %s (order_item_id, attribute_name, item_id) VALUES %s",
-            $this->table(),
+            $this->getTable(),
             implode(', ', $placeholders)
         );
 

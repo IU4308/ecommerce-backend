@@ -11,13 +11,13 @@ abstract class Service
     {
     }
 
-    abstract protected function table(): string;
+    abstract protected function getTable(): string;
 
     public function get(string $id): ?array
     {
         return $this->connection->createQueryBuilder()
             ->select('*')
-            ->from($this->table())
+            ->from($this->getTable())
             ->where('id = :id')
             ->setParameter('id', $id)
             ->executeQuery()
@@ -28,7 +28,7 @@ abstract class Service
     {
         return $this->connection->createQueryBuilder()
             ->select('*')
-            ->from($this->table())
+            ->from($this->getTable())
             ->executeQuery()
             ->fetchAllAssociative();
     }
@@ -37,7 +37,7 @@ abstract class Service
     {
         return $this->connection->createQueryBuilder()
             ->select('*')
-            ->from($this->table())
+            ->from($this->getTable())
             ->where("$column = :value")
             ->setParameter('value', $value)
             ->executeQuery()

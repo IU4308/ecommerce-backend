@@ -4,7 +4,7 @@ namespace App\Service;
 
 class OrderItemService extends Service
 {
-    protected function table(): string
+    protected function getTable(): string
     {
         return 'order_items';
     }
@@ -15,7 +15,7 @@ class OrderItemService extends Service
 
         $sql = sprintf(
             "INSERT INTO %s (order_id, product_id, quantity) VALUES %s",
-            $this->table(),
+            $this->getTable(),
             implode(', ', $placeholders)
         );
 
