@@ -203,3 +203,7 @@ INSERT INTO product_gallery (product_id, image_url) VALUES ('apple-airpods-pro',
 INSERT INTO product_prices (product_id, currency_label, currency_symbol, amount) VALUES ('apple-airpods-pro', 'USD', '$', 300.23);
 INSERT INTO product_gallery (product_id, image_url) VALUES ('apple-airtag', 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/airtag-double-select-202104?wid=445&hei=370&fmt=jpeg&qlt=95&.v=1617761672000');
 INSERT INTO product_prices (product_id, currency_label, currency_symbol, amount) VALUES ('apple-airtag', 'USD', '$', 120.57);
+
+ALTER DATABASE mydb CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+ALTER TABLE products CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

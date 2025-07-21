@@ -39,7 +39,7 @@ class GraphQL
             ];
         }
 
-        // header('Content-Type: application/json; charset=UTF-8');
+        header('Content-Type: application/json; charset=UTF-8');
         function utf8ize($mixed)
         {
             if (is_array($mixed)) {
@@ -53,6 +53,7 @@ class GraphQL
         }
 
         $output = utf8ize($output);
+        error_log("Fetched product description " . json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         return json_encode($output, JSON_UNESCAPED_UNICODE);
     }
 }

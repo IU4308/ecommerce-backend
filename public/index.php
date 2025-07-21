@@ -31,6 +31,8 @@ $db = new Database(
 try {
     $connection = $db->connect();
 
+
+
     Model::setConnection($connection);
 
     echo (new GraphQL())->handle($connection);
