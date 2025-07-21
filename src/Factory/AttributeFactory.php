@@ -8,12 +8,12 @@ use App\Service\AttributeService;
 class AttributeFactory extends Factory
 {
 
-    protected function modelClass(): string
+    protected function resolveModelClass(): string
     {
         return Attribute::class;
     }
 
-    protected function serviceClass(): string
+    protected function resolveServiceClass(): string
     {
         return AttributeService::class;
     }

@@ -7,12 +7,12 @@ use App\Service\CategoryService;
 
 class CategoryFactory extends Factory
 {
-    protected function modelClass(): string
+    protected function resolveModelClass(): string
     {
         return Category::class;
     }
 
-    protected function serviceClass(): string
+    protected function resolveServiceClass(): string
     {
         return CategoryService::class;
     }

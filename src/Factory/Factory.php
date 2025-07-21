@@ -14,12 +14,12 @@ abstract class Factory
         $this->service = $this->makeService();
     }
 
-    abstract protected function modelClass(): string;
-    abstract protected function serviceClass(): string;
+    abstract protected function resolveModelClass(): string;
+    abstract protected function resolveServiceClass(): string;
 
     protected function makeService(): object
     {
-        $class = $this->serviceClass();
+        $class = $this->resolveServiceClass();
         return new $class($this->connection);
     }
 
@@ -29,7 +29,7 @@ abstract class Factory
         if (!$row) {
             throw new NotFoundException("Item with ID $id not found");
         }
-        return ($this->modelClass())::hydrate($row);
+        return ($this->resolveModelClass())::hydrate($row);
     }
 
     public function loadMany($arg = null, $method = 'getAll'): array
@@ -46,6 +46,6 @@ abstract class Factory
 
     protected function mapRow(array $row): object
     {
-        return ($this->modelClass())::hydrate($row);
+        return ($this->resolveModelClass())::hydrate($row);
     }
 }

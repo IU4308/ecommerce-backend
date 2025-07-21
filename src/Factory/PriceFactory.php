@@ -7,12 +7,12 @@ use App\Service\PriceService;
 
 class PriceFactory extends Factory
 {
-    protected function modelClass(): string
+    protected function resolveModelClass(): string
     {
         return Price::class;
     }
 
-    protected function serviceClass(): string
+    protected function resolveServiceClass(): string
     {
         return PriceService::class;
     }

@@ -21,12 +21,12 @@ class ProductFactory extends Factory
         $this->attributeFactory = $attributeFactory;
     }
 
-    protected function modelClass(): string
+    protected function resolveModelClass(): string
     {
         return Product::class;
     }
 
-    protected function serviceClass(): string
+    protected function resolveServiceClass(): string
     {
         return ProductService::class;
     }

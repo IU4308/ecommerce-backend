@@ -7,12 +7,12 @@ use App\Service\OrderItemService;
 
 class OrderItemFactory extends Factory
 {
-    protected function modelClass(): string
+    protected function resolveModelClass(): string
     {
         return OrderItem::class;
     }
 
-    protected function serviceClass(): string
+    protected function resolveServiceClass(): string
     {
         return OrderItemService::class;
     }

@@ -21,12 +21,12 @@ class OrderFactory extends Factory
         $this->orderAttributeFactory = $orderAttributeFactory;
     }
 
-    protected function modelClass(): string
+    protected function resolveModelClass(): string
     {
         return Order::class;
     }
 
-    protected function serviceClass(): string
+    protected function resolveServiceClass(): string
     {
         return OrderService::class;
     }

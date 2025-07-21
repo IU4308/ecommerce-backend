@@ -7,12 +7,12 @@ use App\Service\OrderAttributeService;
 
 class OrderAttributeFactory extends Factory
 {
-    protected function modelClass(): string
+    protected function resolveModelClass(): string
     {
         return OrderAttribute::class;
     }
 
-    protected function serviceClass(): string
+    protected function resolveServiceClass(): string
     {
         return OrderAttributeService::class;
     }

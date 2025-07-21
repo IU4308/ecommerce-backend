@@ -7,12 +7,12 @@ use App\Service\GalleryService;
 
 class GalleryFactory extends Factory
 {
-    protected function modelClass(): string
+    protected function resolveModelClass(): string
     {
         return Gallery::class;
     }
 
-    protected function serviceClass(): string
+    protected function resolveServiceClass(): string
     {
         return GalleryService::class;
     }
