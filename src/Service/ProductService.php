@@ -33,7 +33,6 @@ class ProductService extends Service
             )
             ->leftJoin('pg_min', 'product_gallery', 'pg', 'pg.id = pg_min.min_id');
 
-        // Add category filter only if $category is set and not 'all'
         if ($category !== null && $category !== 'all') {
             $qb->andWhere('p.category = :category')
                 ->setParameter('category', $category);

@@ -8,6 +8,8 @@ use App\Controller\GraphQL;
 use App\Model\Model;
 
 
+header('Content-Type: application/json; charset=utf-8');
+
 $config = new Config(__DIR__ . '/../');
 $frontendUrl = $config->get('FRONTEND_URL');
 header("Access-Control-Allow-Origin: $frontendUrl");
