@@ -13,6 +13,7 @@ class GraphQL
 {
     public function handle(Connection $connection): string
     {
+        header('Content-Type: application/json; charset=utf-8');
         try {
             $schema = SchemaBuilder::build($connection);
 
