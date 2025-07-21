@@ -13,7 +13,6 @@ class GraphQL
 {
     public function handle(Connection $connection): string
     {
-        header('Content-Type: application/json; charset=utf-8');
         try {
             $schema = SchemaBuilder::build($connection);
 
@@ -41,6 +40,6 @@ class GraphQL
         }
 
         header('Content-Type: application/json; charset=UTF-8');
-        return json_encode($output);
+        return json_encode($output, JSON_UNESCAPED_UNICODE);
     }
 }
