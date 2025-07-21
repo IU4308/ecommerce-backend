@@ -39,7 +39,7 @@ class GraphQL
             ];
         }
 
-        header('Content-Type: application/json; charset=UTF-8');
-        return json_encode($output, JSON_UNESCAPED_UNICODE);
+        // header('Content-Type: application/json; charset=UTF-8');
+        return json_encode($output);
     }
 }
