@@ -21,7 +21,11 @@ abstract class Resolver
         }
 
         try {
-            return $this->factory->load($id);
+
+            $product = $this->factory->load($id);
+            error_log("Fetched product description " . json_encode($product->description, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
+            return $product;
         } catch (NotFoundException $e) {
             throw new UserError($e->getMessage());
         }
