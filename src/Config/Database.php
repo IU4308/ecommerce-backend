@@ -26,6 +26,7 @@ class Database
                 'password' => $_ENV['DB_PASS'],
                 'host' => $_ENV['DB_HOST'],
                 'driver' => 'pdo_mysql',
+                'charset' => 'utf8mb4',
             ]);
             return $this->connection;
         } catch (\Doctrine\DBAL\Exception $e) {
