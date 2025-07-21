@@ -27,14 +27,14 @@ abstract class Resolver
         }
     }
 
-    public function getAll(): array
+    public function getAll($context = null): array
     {
         if (!method_exists($this->factory, 'loadMany')) {
             throw new \BadMethodCallException('Method loadMany() not implemented in factory.');
         }
 
         try {
-            return $this->factory->loadMany();
+            return $this->factory->loadMany($context);
         } catch (NotFoundException $e) {
             throw new UserError($e->getMessage());
         }

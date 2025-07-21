@@ -20,7 +20,10 @@ class QueryType extends ObjectType
                 ],
                 'products' => [
                     'type' => Type::listOf(TypeRegistry::product()),
-                    'resolve' => fn() => $resolvers->product()->getAll()
+                    'args' => [
+                        'category' => Type::nonNull(Type::string()),
+                    ],
+                    'resolve' => fn($root, array $args) => $resolvers->product()->getAll($args['category'])
                 ],
                 'product' => [
                     'type' => TypeRegistry::product(),

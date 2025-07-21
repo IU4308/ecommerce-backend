@@ -9,9 +9,9 @@ class ProductService extends Service
         return 'products';
     }
 
-    public function getAll($arg = null): array
+    public function getAll($category = null): array
     {
-        return $this->connection->createQueryBuilder()
+        $qb = $this->connection->createQueryBuilder()
             ->select(
                 'p.id',
                 'p.name',
@@ -31,8 +31,15 @@ class ProductService extends Service
                 'pg_min',
                 'pg_min.product_id = p.id'
             )
-            ->leftJoin('pg_min', 'product_gallery', 'pg', 'pg.id = pg_min.min_id')
-            ->executeQuery()
-            ->fetchAllAssociative();
+            ->leftJoin('pg_min', 'product_gallery', 'pg', 'pg.id = pg_min.min_id');
+
+        // Add category filter only if $category is set and not 'all'
+        if ($category !== null && $category !== 'all') {
+            $qb->andWhere('p.category = :category')
+                ->setParameter('category', $category);
+        }
+
+        return $qb->executeQuery()->fetchAllAssociative();
     }
+
 }
